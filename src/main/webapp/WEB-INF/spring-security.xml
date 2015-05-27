@@ -1,0 +1,43 @@
+<beans:beans xmlns:beans="http://www.springframework.org/schema/beans"
+             xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+             xmlns="http://www.springframework.org/schema/security"
+             xsi:schemaLocation="http://www.springframework.org/schema/beans
+	http://www.springframework.org/schema/beans/spring-beans-4.0.xsd
+	http://www.springframework.org/schema/security
+	http://www.springframework.org/schema/security/spring-security-4.0.xsd">
+
+    <!--<http pattern="/login" security="none"/>-->
+
+    <!-- TODO: Piyush check whether following are required : session-fixation-protection="newSession" auto-config="true"-->
+    <http use-expressions="true">
+        <intercept-url pattern="/login**" access="permitAll"/>
+        <!--<intercept-url pattern="/**" access="permitAll"/>-->
+        <intercept-url pattern="/app/**" access="hasRole('ROLE_USER')"/>
+        <intercept-url pattern="/trainer*" access="hasRole('ROLE_TRAINER')"/>
+        <intercept-url pattern="/admin**" access="hasRole('ROLE_SUPER_ADMIN')"/>
+        <form-login
+                login-page="/login"
+                default-target-url="/welcome"
+                login-processing-url="/j_spring_security_check"
+                authentication-failure-url="/login?error"
+                username-parameter="username"
+                password-parameter="password"/>
+        <logout logout-url="/j_spring_security_logout" logout-success-url="/login?logout"/>
+        <!-- enable csrf protection -->
+        <csrf/>
+    </http>
+
+    <authentication-manager>
+        <authentication-provider>
+            <user-service>
+                <user name="piyush.ramavat" password="Welcome@1"
+                      authorities="ROLE_SUPER_ADMIN, ROLE_TRAINER, ROLE_USER"/>
+                <user name="chintan.gatecha" password="Welcome@1"
+                      authorities="ROLE_SUPER_ADMIN, ROLE_TRAINER, ROLE_USER"/>
+                <user name="sample.trainer" password="Welcome@1" authorities="ROLE_TRAINER, ROLE_USER"/>
+                <user name="sample.patron" password="Welcome@1" authorities="ROLE_USER"/>
+            </user-service>
+        </authentication-provider>
+    </authentication-manager>
+
+</beans:beans>
