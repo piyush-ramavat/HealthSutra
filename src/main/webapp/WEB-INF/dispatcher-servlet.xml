@@ -1,14 +1,20 @@
 <beans xmlns:context="http://www.springframework.org/schema/context"
        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:mvc="http://www.springframework.org/schema/mvc"
+       xmlns:tx="http://www.springframework.org/schema/tx"
        xmlns="http://www.springframework.org/schema/beans"
-       xsi:schemaLocation="
- http://www.springframework.org/schema/beans
- http://www.springframework.org/schema/beans/spring-beans-4.0.xsd
- http://www.springframework.org/schema/context
- http://www.springframework.org/schema/context/spring-context-4.0.xsd">
+       xsi:schemaLocation="http://www.springframework.org/schema/mvc http://www.springframework.org/schema/mvc/spring-mvc-4.0.xsd
+ http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-4.0.xsd
+ http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx-4.0.xsd
+ http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-4.0.xsd">
 
+    <!-- Enable @Controller annotation support -->
+    <mvc:annotation-driven/>
+
+    <!-- Scan classpath for annotations (eg: @Service, @Repository etc) -->
     <context:component-scan base-package="au.com.healthsutra.controllers"/>
 
+    <!-- Map simple view name such as "test" into /WEB-INF/test.jsp -->
     <bean class="org.springframework.web.servlet.view.InternalResourceViewResolver">
         <property name="prefix">
             <value>/WEB-INF/app/views/</value>
@@ -17,4 +23,38 @@
             <value>.jsp</value>
         </property>
     </bean>
+
+    <!-- JDBC Data Source. It is assumed you have MySQL running on localhost port 3306 with
+       username root and blank password. Change below if it's not the case -->
+    <bean id="hsDataSource" class="org.apache.commons.dbcp.BasicDataSource" destroy-method="close">
+        <property name="driverClassName" value="com.mysql.jdbc.Driver"/>
+        <property name="url" value="jdbc:mysql://localhost:3306/healthsutra"/>
+        <property name="username" value="healthsutra"/>
+        <property name="password" value="healthsutra"/>
+        <property name="validationQuery" value="SELECT 1"/>
+    </bean>
+
+    <!-- Hibernate Session Factory -->
+    <bean id="hsSessionFactory" class="org.springframework.orm.hibernate4.LocalSessionFactoryBean">
+        <property name="dataSource" ref="hsDataSource"/>
+        <property name="packagesToScan">
+            <array>
+                <value>au.com.healthsutra</value>
+            </array>
+        </property>
+        <property name="hibernateProperties">
+            <value>
+                hibernate.dialect=org.hibernate.dialect.MySQLDialect
+            </value>
+        </property>
+    </bean>
+
+    <!-- Hibernate Transaction Manager -->
+    <bean id="hsTransactionManager" class="org.springframework.orm.hibernate4.HibernateTransactionManager">
+        <property name="sessionFactory" ref="hsSessionFactory"/>
+    </bean>
+
+    <!-- Activates annotation based transaction management -->
+    <tx:annotation-driven transaction-manager="hsTransactionManager"/>
+
 </beans>

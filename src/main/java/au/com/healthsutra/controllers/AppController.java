@@ -36,7 +36,8 @@ public class AppController {
     @RequestMapping(value = "/login", method = RequestMethod.GET)
     public ModelAndView login(
             @RequestParam(value = "error", required = false) String error,
-            @RequestParam(value = "logout", required = false) String logout) {
+            @RequestParam(value = "logout", required = false) String logout,
+            @RequestParam(value = "message", required = false) String message) {
 
         ModelAndView model = new ModelAndView();
         if (error != null) {
@@ -45,6 +46,10 @@ public class AppController {
 
         if (logout != null) {
             model.addObject("msg", "You've been logged out successfully.");
+        }
+
+        if (message != null) {
+            model.addObject("msg", message);
         }
         model.setViewName("login");
 

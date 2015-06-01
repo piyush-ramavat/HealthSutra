@@ -23,10 +23,13 @@
                 username-parameter="username"
                 password-parameter="password"/>
         <logout logout-url="/j_spring_security_logout" logout-success-url="/login?logout"/>
+        <!--
+        <session-management invalid-session-url="/login?message=Session%20timed%20out!!!" />
+        -->
         <!-- enable csrf protection -->
         <csrf/>
     </http>
-
+<!--
     <authentication-manager>
         <authentication-provider>
             <user-service>
@@ -39,5 +42,14 @@
             </user-service>
         </authentication-provider>
     </authentication-manager>
+-->
+    <authentication-manager>
+        <authentication-provider user-service-ref='myUserDetailsService'/>
+    </authentication-manager>
+
+    <beans:bean id="myUserDetailsService"
+                class="org.springframework.security.core.userdetails.jdbc.JdbcDaoImpl">
+        <beans:property name="dataSource" ref="hsDataSource"/>
+    </beans:bean>
 
 </beans:beans>
