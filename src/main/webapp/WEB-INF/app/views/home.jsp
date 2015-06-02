@@ -27,7 +27,9 @@
     <h2>Account Home</h2>
 
     <h2>
-        <a href="<c:url value="/admin" />">Admin</a> | <a href="javascript:formSubmit()"> Logout</a>
+        <a href="<c:url value="/admin" />">Admin</a> |
+        <a href="<c:url value="/subjects/listAll" />">Subjects</a> |
+        <a href="javascript:formSubmit()"> Logout</a>
     </h2>
 </center>
 </body>

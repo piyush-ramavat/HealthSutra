@@ -8,11 +8,13 @@
  http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx-4.0.xsd
  http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-4.0.xsd">
 
+    <context:property-placeholder location="classpath:healthsutra.properties" />
+
     <!-- Enable @Controller annotation support -->
     <mvc:annotation-driven/>
 
     <!-- Scan classpath for annotations (eg: @Service, @Repository etc) -->
-    <context:component-scan base-package="au.com.healthsutra.controllers"/>
+    <context:component-scan base-package="au.com.healthsutra"/>
 
     <!-- Map simple view name such as "test" into /WEB-INF/test.jsp -->
     <bean class="org.springframework.web.servlet.view.InternalResourceViewResolver">
@@ -26,35 +28,42 @@
 
     <!-- JDBC Data Source. It is assumed you have MySQL running on localhost port 3306 with
        username root and blank password. Change below if it's not the case -->
-    <bean id="hsDataSource" class="org.apache.commons.dbcp.BasicDataSource" destroy-method="close">
-        <property name="driverClassName" value="com.mysql.jdbc.Driver"/>
-        <property name="url" value="jdbc:mysql://localhost:3306/healthsutra"/>
-        <property name="username" value="healthsutra"/>
-        <property name="password" value="healthsutra"/>
+    <bean id="dataSource" class="org.apache.commons.dbcp.BasicDataSource" destroy-method="close">
+        <property name="driverClassName" value="${jdbc.driverClassName}"/>
+        <property name="url" value="${jdbc.url}"/>
+        <property name="username" value="${jdbc.user}"/>
+        <property name="password" value="${jdbc.pass}"/>
         <property name="validationQuery" value="SELECT 1"/>
     </bean>
 
     <!-- Hibernate Session Factory -->
-    <bean id="hsSessionFactory" class="org.springframework.orm.hibernate4.LocalSessionFactoryBean">
-        <property name="dataSource" ref="hsDataSource"/>
+    <bean id="sessionFactory" class="org.springframework.orm.hibernate4.LocalSessionFactoryBean">
+        <property name="dataSource" ref="dataSource"/>
         <property name="packagesToScan">
             <array>
                 <value>au.com.healthsutra</value>
             </array>
         </property>
         <property name="hibernateProperties">
-            <value>
-                hibernate.dialect=org.hibernate.dialect.MySQLDialect
-            </value>
+            <props>
+                <prop key="hibernate.dialect">${hibernate.dialect}</prop>
+                <prop key="hibernate.show_sql">${hibernate.show_sql}</prop>
+                <prop key="hibernate.format_sql">${hibernate.format_sql}</prop>
+                <prop key="hbm2ddl.auto">${hibernate.hbm2ddl.auto}</prop>
+                <prop key="hibernate.archive.autodetection">class</prop>
+            </props>
         </property>
     </bean>
 
     <!-- Hibernate Transaction Manager -->
-    <bean id="hsTransactionManager" class="org.springframework.orm.hibernate4.HibernateTransactionManager">
-        <property name="sessionFactory" ref="hsSessionFactory"/>
+    <bean id="transactionManager" class="org.springframework.orm.hibernate4.HibernateTransactionManager">
+        <property name="sessionFactory" ref="sessionFactory"/>
     </bean>
 
     <!-- Activates annotation based transaction management -->
-    <tx:annotation-driven transaction-manager="hsTransactionManager"/>
+    <tx:annotation-driven transaction-manager="transactionManager"/>
+
+    <bean id="persistenceExceptionTranslationPostProcessor"
+          class="org.springframework.dao.annotation.PersistenceExceptionTranslationPostProcessor"/>
 
 </beans>
