@@ -1,0 +1,17 @@
+Spring project Setup:
+
+. Create Maven project : Maven.archetype.webapp
+
+. pom.xml, dispatcher-servlet.xml, spring-security.xml, web.xml
+
+. create dir structure and add pages in WEB-INF folder.
+
+
+GIT:
+. add to Repository from github Web portal:
+
+. add existing code in remote server:
+	git remote add origin https://github.com/piyuaryan/HealthSutra.git
+	git push -u origin master
+	
+.

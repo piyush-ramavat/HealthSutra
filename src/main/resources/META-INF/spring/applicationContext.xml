@@ -8,23 +8,13 @@
  http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx-4.0.xsd
  http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-4.0.xsd">
 
-    <context:property-placeholder location="classpath:healthsutra.properties" />
+    <context:property-placeholder location="classpath:healthsutra/healthsutra.properties" />
 
     <!-- Enable @Controller annotation support -->
     <mvc:annotation-driven/>
 
     <!-- Scan classpath for annotations (eg: @Service, @Repository etc) -->
     <context:component-scan base-package="au.com.healthsutra"/>
-
-    <!-- Map simple view name such as "test" into /WEB-INF/test.jsp -->
-    <bean class="org.springframework.web.servlet.view.InternalResourceViewResolver">
-        <property name="prefix">
-            <value>/WEB-INF/app/views/</value>
-        </property>
-        <property name="suffix">
-            <value>.jsp</value>
-        </property>
-    </bean>
 
     <!-- JDBC Data Source. It is assumed you have MySQL running on localhost port 3306 with
        username root and blank password. Change below if it's not the case -->

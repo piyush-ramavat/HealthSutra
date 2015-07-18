@@ -10,28 +10,45 @@
 
     <display-name>HealthSutra WebApp</display-name>
 
+    <!-- Enable escaping of form submission contents to prevent XSS -->
+    <context-param>
+        <param-name>defaultHtmlEscape</param-name>
+        <param-value>true</param-value>
+    </context-param>
+
+    <!-- Application Context Configuration -->
+    <context-param>
+        <param-name>contextConfigLocation</param-name>
+        <param-value>classpath*:META-INF/spring/applicationContext*.xml</param-value>
+    </context-param>
+
+    <!-- Configurations for the DispatcherServlet application context (child context) -->
+    <!-- Main Servlet -->
     <servlet>
-        <servlet-name>dispatcher</servlet-name>
+        <servlet-name>healthsutra</servlet-name>
         <servlet-class>org.springframework.web.servlet.DispatcherServlet</servlet-class>
+        <init-param>
+            <param-name>contextConfigLocation</param-name>
+            <param-value>
+                /WEB-INF/spring/webmvc-config.xml
+            </param-value>
+        </init-param>
         <load-on-startup>1</load-on-startup>
     </servlet>
 
     <servlet-mapping>
-        <servlet-name>dispatcher</servlet-name>
+        <servlet-name>healthsutra</servlet-name>
         <url-pattern>/</url-pattern>
     </servlet-mapping>
-    <session-config>
-        <session-timeout>2</session-timeout>
-    </session-config>
 
     <listener>
         <listener-class>org.springframework.web.context.ContextLoaderListener</listener-class>
     </listener>
 
-    <context-param>
-        <param-name>contextConfigLocation</param-name>
-        <param-value>/WEB-INF/dispatcher-servlet.xml, /WEB-INF/spring-security.xml</param-value>
-    </context-param>
+    <!-- Session Handling -->
+    <session-config>
+        <session-timeout>2</session-timeout>
+    </session-config>
 
     <!-- Spring Security -->
     <filter>
@@ -43,4 +60,24 @@
         <filter-name>springSecurityFilterChain</filter-name>
         <url-pattern>/*</url-pattern>
     </filter-mapping>
+
+    <!-- Additional Filters -->
+    <filter>
+        <filter-name>CharacterEncodingFilter</filter-name>
+        <filter-class>org.springframework.web.filter.CharacterEncodingFilter</filter-class>
+        <init-param>
+            <param-name>encoding</param-name>
+            <param-value>UTF-8</param-value>
+        </init-param>
+        <init-param>
+            <param-name>forceEncoding</param-name>
+            <param-value>true</param-value>
+        </init-param>
+    </filter>
+
+    <filter-mapping>
+        <filter-name>CharacterEncodingFilter</filter-name>
+        <url-pattern>/*</url-pattern>
+    </filter-mapping>
+
 </web-app>
