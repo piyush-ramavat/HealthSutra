@@ -10,18 +10,6 @@
 
     <display-name>HealthSutra WebApp</display-name>
 
-    <!-- Enable escaping of form submission contents to prevent XSS -->
-    <context-param>
-        <param-name>defaultHtmlEscape</param-name>
-        <param-value>true</param-value>
-    </context-param>
-
-    <!-- Application Context Configuration -->
-    <context-param>
-        <param-name>contextConfigLocation</param-name>
-        <param-value>classpath*:META-INF/spring/applicationContext*.xml</param-value>
-    </context-param>
-
     <!-- Configurations for the DispatcherServlet application context (child context) -->
     <!-- Main Servlet -->
     <servlet>
@@ -44,6 +32,18 @@
     <listener>
         <listener-class>org.springframework.web.context.ContextLoaderListener</listener-class>
     </listener>
+
+    <!-- Application Context Configuration -->
+    <context-param>
+        <param-name>contextConfigLocation</param-name>
+        <param-value>classpath*:META-INF/spring/applicationContext*.xml</param-value>
+    </context-param>
+
+    <!-- Enable escaping of form submission contents to prevent XSS -->
+    <context-param>
+        <param-name>defaultHtmlEscape</param-name>
+        <param-value>true</param-value>
+    </context-param>
 
     <!-- Session Handling -->
     <session-config>

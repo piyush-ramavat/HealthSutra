@@ -15,8 +15,10 @@
     <!-- Enable @Controller annotation support -->
     <mvc:annotation-driven/>
 
-    <!-- Scan classpath for annotations (eg: @Service, @Repository etc) -->
-    <context:component-scan base-package="au.com.healthsutra"/>
+    <!-- Scan classpath for annotations (eg: @Controllers) -->
+    <context:component-scan base-package="au.com.healthsutra" use-default-filters="false">
+        <context:include-filter expression="org.springframework.stereotype.Controller" type="annotation"/>
+    </context:component-scan>
 
 <!--
     <mvc:view-controller path="/index.html" />
