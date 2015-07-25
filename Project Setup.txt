@@ -15,3 +15,58 @@ GIT:
 	git push -u origin master
 	
 .
+
+-------
+My SQL:
+HealthSutra:
+
+Database:
+MySQL
+UserName : healthsutra
+Pwd: healthsutra
+
+--------------------------
+MYSQL Commands:
+HELP: https://www.digitalocean.com/community/tutorials/a-basic-mysql-tutorial
+
+# set up tables:
+mysql_install_db --verbose --user=`whoami` --basedir="$(brew --prefix mysql)" --datadir=/usr/local/var/mysql --tmpdir=/tmp
+
+#Start server:
+mysql.server start
+
+# set Password
+mysqladmin -u root password NEWPASSWORD
+
+# Reset Password
+mysqladmin -u root -p'NEWPASSWORD' password Welcome@1
+
+#Login: root
+mysql -u root -p
+Enter password: Welcome@1
+
+#create database
+CREATE DATABASE healthsutra;
+
+# create user
+CREATE USER 'healthsutra'@'localhost' IDENTIFIED BY 'healthsutra';
+
+# Grant Permisions:
+GRANT [type of permission] ON [database name].[table name] TO ‘[username]’@'localhost’;
+
+GRANT ALL PRIVILEGES ON healthsutra.* TO 'healthsutra'@'localhost';
+FLUSH PRIVILEGES;
+
+# So now user can login using
+mysql -u healthsutra -p
+
+---
+# To check MySQL or any service is running on port (3306 for mysql)
+telnet Piyushs-MBP 3306
+
+# My sql dir should b owned by "_mysql"
+sudo chown -R _mysql /usr/local/var/mysql
+--------------------------
+RVM:
+
+curl -L https://get.rvm.io | bash -s stable
