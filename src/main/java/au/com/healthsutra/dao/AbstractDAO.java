@@ -1,22 +1,52 @@
 package au.com.healthsutra.dao;
-import org.hibernate.Session;
-import org.hibernate.SessionFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 
+import org.springframework.stereotype.Repository;
+
+import javax.persistence.EntityManager;
+import javax.persistence.PersistenceContext;
+import javax.transaction.Transactional;
+
+@Repository
 public abstract class AbstractDAO {
 
-    @Autowired
-    private SessionFactory sessionFactory;
+    @PersistenceContext
+    private EntityManager em;
 
-    protected Session getSession() {
-        return sessionFactory.getCurrentSession();
+    public void setEntityManager(EntityManager em) {
+        this.em = em;
     }
 
+    protected EntityManager getEntityManager() {
+        return em;
+    }
+
+    @Transactional
     public void persist(Object entity) {
-        getSession().persist(entity);
+        em.persist(entity);
     }
 
-    public void delete(Object entity) {
-        getSession().delete(entity);
+    @Transactional
+    public void persist() {
+        this.em.persist(this);
+    }
+
+    @Transactional
+    public void remove() {
+        this.em.remove(this);
+    }
+
+    @Transactional
+    public void flush() {
+        this.em.flush();
+    }
+
+    @Transactional
+    public void clear() {
+        this.em.clear();
+    }
+
+    @Transactional
+    public void merge() {
+        em.merge(this);
     }
 }

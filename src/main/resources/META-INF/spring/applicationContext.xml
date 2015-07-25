@@ -6,10 +6,15 @@
  http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx-4.0.xsd
  http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-4.0.xsd">
 
-    <context:property-placeholder location="classpath:healthsutra/healthsutra.properties"/>
+    <context:property-placeholder location="classpath:healthsutra/conf/healthsutra.properties"/>
 
     <!-- Scan classpath for annotations (eg: @Service, @Repository etc) -->
-    <context:component-scan base-package="au.com.healthsutra"/>
+    <context:component-scan base-package="au.com.healthsutra">
+        <context:exclude-filter expression="org.springframework.stereotype.Controller" type="annotation"/>
+    </context:component-scan>
+
+    <!-- Scan  persistenceUnits -->
+    <context:spring-configured/>
 
     <!-- JDBC Data Source. It is assumed you have MySQL running on localhost port 3306 with
        username root and blank password. Change below if it's not the case -->
@@ -21,28 +26,18 @@
         <property name="validationQuery" value="SELECT 1"/>
     </bean>
 
-    <!-- Hibernate Session Factory -->
-    <bean id="sessionFactory" class="org.springframework.orm.hibernate4.LocalSessionFactoryBean">
+    <bean class="org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean" id="entityManagerFactory">
+        <property name="persistenceUnitName" value="persistenceUnit"/>
         <property name="dataSource" ref="dataSource"/>
-        <property name="packagesToScan" value="au.com.healthsutra"/>
-        <property name="hibernateProperties">
-            <props>
-                <prop key="hibernate.dialect">${hibernate.dialect}</prop>
-                <prop key="hibernate.show_sql">${hibernate.show_sql}</prop>
-                <prop key="hibernate.format_sql">${hibernate.format_sql}</prop>
-                <prop key="hbm2ddl.auto">${hibernate.hbm2ddl.auto}</prop>
-                <prop key="hibernate.archive.autodetection">class</prop>
-            </props>
-        </property>
+    </bean>
+
+    <bean class="org.springframework.orm.jpa.JpaTransactionManager" id="transactionManager">
+        <property name="entityManagerFactory" ref="entityManagerFactory"/>
     </bean>
 
     <!-- Hibernate Transaction Manager -->
-    <bean id="transactionManager" class="org.springframework.orm.hibernate4.HibernateTransactionManager">
-        <property name="sessionFactory" ref="sessionFactory"/>
-    </bean>
-
     <!-- Activates annotation based transaction management -->
-    <tx:annotation-driven transaction-manager="transactionManager"/>
+    <tx:annotation-driven mode="aspectj" transaction-manager="transactionManager"/>
 
     <bean id="persistenceExceptionTranslationPostProcessor"
           class="org.springframework.dao.annotation.PersistenceExceptionTranslationPostProcessor"/>

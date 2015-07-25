@@ -1,16 +1,15 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<beans xmlns="http://www.springframework.org/schema/beans"
-       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+<beans xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
        xmlns:context="http://www.springframework.org/schema/context"
        xmlns:mvc="http://www.springframework.org/schema/mvc"
+       xmlns:p="http://www.springframework.org/schema/p"
+       xmlns="http://www.springframework.org/schema/beans"
        xsi:schemaLocation="http://www.springframework.org/schema/beans
                            http://www.springframework.org/schema/beans/spring-beans.xsd
                            http://www.springframework.org/schema/context
                            http://www.springframework.org/schema/context/spring-context.xsd
                            http://www.springframework.org/schema/mvc
                            http://www.springframework.org/schema/mvc/spring-mvc.xsd">
-<!-- Name space for extra configurations
-     xmlns:p="http://www.springframework.org/schema/p" -->
 
     <!-- Enable @Controller annotation support -->
     <mvc:annotation-driven/>
@@ -20,9 +19,11 @@
         <context:include-filter expression="org.springframework.stereotype.Controller" type="annotation"/>
     </context:component-scan>
 
-<!--
-    <mvc:view-controller path="/index.html" />
--->
+    <!-- Allows for mapping the DispatcherServlet to "/" by forwarding static resource
+        requests to the container's default Servlet -->
+    <!--
+        <mvc:default-servlet-handler/>
+    -->
 
     <!-- Map simple view name such as "test" into /WEB-INF/test.jsp -->
     <bean class="org.springframework.web.servlet.view.InternalResourceViewResolver">
@@ -30,28 +31,86 @@
         <property name="suffix" value=".jsp"/>
     </bean>
 
-<!--
-
-    <bean id="tilesConfigurer"
-          class="org.springframework.web.servlet.view.tiles2.TilesConfigurer"
-          p:definitions="/WEB-INF/tiles-defs/templates.xml" />
-
-    <bean id="tilesViewResolver"
-          class="org.springframework.web.servlet.view.UrlBasedViewResolver"
-          p:viewClass="org.springbyexample.web.servlet.view.tiles2.DynamicTilesView"
-          p:prefix="/WEB-INF/jsp/"
-          p:suffix=".jsp" />
-
-    <bean id="messageSource" class="org.springframework.context.support.ResourceBundleMessageSource"
-          p:basenames="messages" />
--->
-    <!-- Declare the Interceptor -->
-<!--    <mvc:interceptors>
-        <bean class="org.springframework.web.servlet.i18n.LocaleChangeInterceptor"
-              p:paramName="locale" />
+    <!-- Register "global" interceptor beans to apply to all registered HandlerMappings -->
+    <mvc:interceptors>
+        <bean class="org.springframework.web.servlet.theme.ThemeChangeInterceptor"/>
+        <bean class="org.springframework.web.servlet.i18n.LocaleChangeInterceptor" p:paramName="lang"/>
     </mvc:interceptors>
--->
+
+    <!-- Selects a static view for rendering without the need for an explicit controller -->
+    <!--
+            <mvc:view-controller path="/login"/>
+            <mvc:view-controller path="/"/>
+            <mvc:view-controller path="/uncaughtException"/>
+            <mvc:view-controller path="/resourceNotFound"/>
+            <mvc:view-controller path="/dataAccessFailure"/>
+    -->
+
+    <!-- This bean resolves specific types of exceptions to corresponding logical - view names for error views.
+    The default behaviour of DispatcherServlet - is to propagate all exceptions to the servlet
+    container: this will happen - here with all other types of exceptions. -->
+    <!--
+            <bean class="org.springframework.web.servlet.handler.SimpleMappingExceptionResolver"
+                  p:defaultErrorView="uncaughtException">
+                <property name="exceptionMappings">
+                    <props>
+                        <prop key=".DataAccessException">dataAccessFailure</prop>
+                        <prop key=".NoSuchRequestHandlingMethodException">resourceNotFound</prop>
+                        <prop key=".TypeMismatchException">resourceNotFound</prop>
+                        <prop key=".MissingServletRequestParameterException">resourceNotFound</prop>
+                    </props>
+                </property>
+            </bean>
+    -->
+
+    <!-- Enable this for integration of file upload functionality -->
+    <bean class="org.springframework.web.multipart.commons.CommonsMultipartResolver" id="multipartResolver">
+        <!-- setting maximum upload size -->
+        <property name="maxUploadSize" value="10485760"/>
+    </bean>
+
+    <!-- Resolves localized messages*.properties and application.properties files in the application to allow for internationalization.
+    The messages*.properties files translate Roo generated messages which are part of the admin interface, the
+    application.properties resource bundle localizes all application specific messages such as entity names and menu items. -->
+    <bean class="org.springframework.context.support.ReloadableResourceBundleMessageSource" id="messageSource"
+          p:basenames="WEB-INF/i18n/messages,WEB-INF/i18n/application" p:fallbackToSystemLocale="false"/>
+
+    <!-- Store preferred language configuration in a cookie -->
+    <bean class="org.springframework.web.servlet.i18n.CookieLocaleResolver" id="localeResolver" p:cookieName="locale"/>
+
+    <!-- Resolves localized <theme_name>.properties files in the classpath to allow for theme support -->
+    <bean class="org.springframework.ui.context.support.ResourceBundleThemeSource" id="themeSource"/>
+
+    <!-- Store preferred theme configuration in a cookie -->
+    <bean class="org.springframework.web.servlet.theme.CookieThemeResolver" id="themeResolver" p:cookieName="theme"
+          p:defaultThemeName="standard"/>
+
+
+    <!-- Login Interceptor -->
+    <!--    <mvc:interceptors>
+            <mvc:interceptor>
+                <mvc:mapping path="/protected/**"/>
+                <bean class="uaiContacts.interceptor.LoginInterceptor"/>
+            </mvc:interceptor>
+    -->
+    <!-- workaround to fix IE8 problem -->
+    <!--        <bean id="webContentInterceptor"
+                  class="org.springframework.web.servlet.mvc.WebContentInterceptor">
+                <property name="cacheSeconds" value="0"/>
+                <property name="useExpiresHeader" value="true"/>
+                <property name="useCacheControlHeader" value="true"/>
+                <property name="useCacheControlNoStore" value="true"/>
+            </bean>
+        </mvc:interceptors>
+    -->
+
+    <!-- Declare the Interceptor -->
+    <!--    <mvc:interceptors>
+            <bean class="org.springframework.web.servlet.i18n.LocaleChangeInterceptor"
+                  p:paramName="locale" />
+        </mvc:interceptors>
+    -->
     <!-- Declare the Resolver -->
-<!--    <bean id="localeResolver" class="org.springframework.web.servlet.i18n.SessionLocaleResolver" />
--->
+    <!--    <bean id="localeResolver" class="org.springframework.web.servlet.i18n.SessionLocaleResolver" />
+    -->
 </beans>
