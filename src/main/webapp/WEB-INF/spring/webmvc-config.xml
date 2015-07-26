@@ -25,6 +25,9 @@
         <mvc:default-servlet-handler/>
     -->
 
+    <!-- Used to serve static resources like css, images and javascript files-->
+    <mvc:resources mapping="/resources/**" location="/resources/"/>
+
     <!-- Map simple view name such as "test" into /WEB-INF/test.jsp -->
     <bean class="org.springframework.web.servlet.view.InternalResourceViewResolver">
         <property name="prefix" value="/WEB-INF/app/views/"/>
@@ -36,6 +39,16 @@
         <bean class="org.springframework.web.servlet.theme.ThemeChangeInterceptor"/>
         <bean class="org.springframework.web.servlet.i18n.LocaleChangeInterceptor" p:paramName="lang"/>
     </mvc:interceptors>
+
+    <!-- Tiles configuration -->
+    <bean id="tilesConfigurer"
+          class="org.springframework.web.servlet.view.tiles3.TilesConfigurer">
+        <property name="definitions">
+            <list>
+                <value>/WEB-INF/app/tiles/tiles-definitions.xml</value>
+            </list>
+        </property>
+    </bean>
 
     <!-- Selects a static view for rendering without the need for an explicit controller -->
     <!--

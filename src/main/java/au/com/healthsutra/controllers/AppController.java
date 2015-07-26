@@ -20,6 +20,14 @@ public class AppController {
 
     }
 
+    @RequestMapping(value = {"/about"}, method = RequestMethod.GET)
+    public ModelAndView aboutPage() {
+
+        ModelAndView model = new ModelAndView();
+        model.setViewName("about");
+        return model;
+    }
+
     @RequestMapping(value = "/admin**", method = RequestMethod.GET)
     public ModelAndView adminPage() {
 
@@ -41,8 +49,7 @@ public class AppController {
         ModelAndView model = new ModelAndView();
         if (error != null) {
             model.addObject("error", "Invalid username and password!");
-        }
-        else if (logout != null) {
+        } else if (logout != null) {
             model.addObject("msg", "You've been logged out successfully.");
         }
 //        else {

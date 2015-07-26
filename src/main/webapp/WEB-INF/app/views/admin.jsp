@@ -1,29 +1,24 @@
 <%@taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@page session="true" %>
-<html>
-<body>
-<h1>${title}</h1>
+<%@ taglib uri="http://tiles.apache.org/tags-tiles" prefix="tiles" %>
 
-<h2>${message}</h2>
+<tiles:insertDefinition name="defaultTemplate">
+    <tiles:putAttribute name="body">
 
-<c:url value="/j_spring_security_logout" var="logoutUrl"/>
+        <section id="admin" class="bg-main">
+            <div class="container">
+                <div class="row">
+                    <h1>${title}</h1>
 
-<!-- csrf for log out-->
-<form action="${logoutUrl}" method="post" id="logoutForm">
-    <input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}"/>
-</form>
+                    <h2>${message}</h2>
 
-<script>
-    function formSubmit() {
-        document.getElementById("logoutForm").submit();
-    }
-</script>
-
-<c:if test="${pageContext.request.userPrincipal.name != null}">
-    <h2>
-        Welcome : ${pageContext.request.userPrincipal.name} | <a href="javascript:formSubmit()"> Logout</a>
-    </h2>
-</c:if>
-
-</body>
-</html>
+                    <c:if test="${pageContext.request.userPrincipal.name != null}">
+                        <h2>
+                            Welcome : ${pageContext.request.userPrincipal.name}
+                        </h2>
+                    </c:if>
+                </div>
+            </div>
+        </section>
+    </tiles:putAttribute>
+</tiles:insertDefinition>

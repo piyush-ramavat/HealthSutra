@@ -1,36 +1,59 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
-<html>
-<head>
-    <title>Account Home</title>
-</head>
-<body>
+<%@ taglib uri="http://tiles.apache.org/tags-tiles" prefix="tiles" %>
 
+<tiles:insertDefinition name="defaultTemplate">
+    <tiles:putAttribute name="body">
 
-<c:url value="/j_spring_security_logout" var="logoutUrl"/>
+        <section id="home" class="bg-main">
+            <div class="container">
+                <div class="row">
+                    <div class="col-lg-12 text-center">
+                        <h2 class="section-heading">At Your Service</h2>
+                            <%--
+                                        <center>
+                                            <h1>Title : ${title}</h1>
 
-<!-- csrf for log out-->
-<form action="${logoutUrl}" method="post" id="logoutForm">
-    <input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}"/>
-</form>
+                                            <h1>Message : ${message}</h1>
+                                        </center>
+                            --%>
+                        <hr class="primary">
+                    </div>
+                </div>
+            </div>
+            <div class="container">
+                <div class="row">
+                    <div class="col-lg-8 col-lg-offset-3 text-center">
+                        <div class="col-lg-3 col-md-6 text-center">
+                            <div class="service-box">
+                                <i class="fa fa-4x fa-diamond wow bounceIn text-primary"></i>
 
-<script>
-    function formSubmit() {
-        document.getElementById("logoutForm").submit();
-    }
-</script>
+                                <h3><a href="<c:url value="/admin" />">Admin</a></h3>
 
-<center>
-    <h1>Title : ${title}</h1>
+                                <p class="text-muted">Manage your Firm.</p>
+                            </div>
+                        </div>
+                        <div class="col-lg-3 col-md-6 text-center">
+                            <div class="service-box">
+                                <i class="fa fa-4x fa-newspaper-o wow bounceIn text-primary" data-wow-delay=".2s"></i>
 
-    <h1>Message : ${message}</h1>
+                                <h3><a href="<c:url value="/subjects/listAll" />">User Management</a></h3>
 
-    <h2>Account Home</h2>
+                                <p class="text-muted">Manage Your Users and Assign Training programs!</p>
+                            </div>
+                        </div>
+                        <div class="col-lg-3 col-md-6 text-center">
+                            <div class="service-box">
+                                <i class="fa fa-4x fa-paper-plane wow bounceIn text-primary" data-wow-delay=".1s"></i>
 
-    <h2>
-        <a href="<c:url value="/admin" />">Admin</a> |
-        <a href="<c:url value="/subjects/listAll" />">Subjects</a> |
-        <a href="javascript:formSubmit()"> Logout</a>
-    </h2>
-</center>
-</body>
-</html>
+                                <h3><a href="javascript:formSubmit()"> Logout</a></h3>
+
+                                <p class="text-muted">Done with your work? Fly home !!!</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+    </tiles:putAttribute>
+</tiles:insertDefinition>
