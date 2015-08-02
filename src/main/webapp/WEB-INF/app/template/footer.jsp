@@ -1,26 +1,35 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
-<section id="contact">
-    <div class="container">
-        <div class="row">
-            <div class="col-lg-8 col-lg-offset-2 text-center">
-                <h2 class="section-heading">Let's Get In Touch!</h2>
-                <hr class="primary">
-                <p>Have suggestions? That's great! Give us a call or send us an email and we will get back to you as
-                    soon as possible!</p>
+<!-- Start Footer Section -->
+<footer>
+    <div class="">
+        <!-- Start Copyright -->
+        <div class="copyright-section">
+            <div class="row">
+                <div class="col-md-6">
+                    <p>&copy; 2015 HealthSutra - All Rights Reserved <a href="http://healthsutra.com.au">HealthSutra</a>
+                    </p>
+                </div>
+                <!-- .col-md-6 -->
+                <div class="col-md-6">
+                    <ul class="footer-nav">
+                        <li><a href="#">Sitemap</a>
+                        </li>
+                        <li><a href="#">Privacy Policy</a>
+                        </li>
+                        <li><a href="#">Contact</a>
+                        </li>
+                    </ul>
+                </div>
+                <!-- .col-md-6 -->
             </div>
-            <div class="col-lg-4 col-lg-offset-2 text-center">
-                <i class="fa fa-phone fa-3x wow bounceIn"></i>
-
-                <p>123-456-6789</p>
-            </div>
-            <div class="col-lg-4 text-center">
-                <i class="fa fa-envelope-o fa-3x wow bounceIn" data-wow-delay=".1s"></i>
-
-                <p><a href="mailto:your-email@your-domain.com">feedback@healthsutra.com</a></p>
-            </div>
+            <!-- .row -->
         </div>
+        <!-- End Copyright -->
     </div>
-</section>
+</footer>
+<!-- End Footer Section -->
+
+
 <c:url value="/j_spring_security_logout" var="logoutUrl"/>
 
 <!-- csrf for log out-->

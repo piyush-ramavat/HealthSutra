@@ -4,7 +4,7 @@
     <tiles:putAttribute name="body">
 
 
-        <section id="about" class="bg-main">
+        <div class="section service">
             <div class="container">
                 <div class="row">
 
@@ -27,10 +27,9 @@
 
 
                     </ul>
-                    </p>
                 </div>
             </div>
-        </section>
+        </div>
 
     </tiles:putAttribute>
 </tiles:insertDefinition>

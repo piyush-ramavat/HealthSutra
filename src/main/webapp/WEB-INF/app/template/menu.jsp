@@ -1,42 +1,47 @@
 <%@ taglib prefix="c" uri="http://www.springframework.org/tags" %>
-<nav id="mainNav" class="navbar navbar-default navbar-fixed-top">
-    <div class="container-fluid">
-        <!-- Brand and toggle get grouped for better mobile display -->
+<!-- Start  Logo & Naviagtion  -->
+<div class="navbar navbar-default navbar-top">
+    <div class="container">
         <div class="navbar-header">
-            <button type="button" class="navbar-toggle collapsed" data-toggle="collapse"
-                    data-target="#bs-example-navbar-collapse-1">
-                <span class="sr-only">Toggle navigation</span>
-                <span class="icon-bar"></span>
-                <span class="icon-bar"></span>
-                <span class="icon-bar"></span>
+            <!-- Stat Toggle Nav Link For Mobiles -->
+            <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+                <i class="fa fa-bars"></i>
             </button>
-            <a class="navbar-brand page-scroll" href="#page-top">HealthSutra</a>
+            <!-- End Toggle Nav Link For Mobiles -->
+            <a class="navbar-brand" href="<c:url value="/welcome" />">
+                <img alt="HealthSutra" width="150" src="${pageContext.request.contextPath}/resources/images/healthsutra.png">
+            </a>
         </div>
+        <div class="navbar-collapse collapse">
+            <!-- Stat Search -->
+            <div class="search-side">
+                <a href="#" class="show-search"><i class="fa fa-search"></i></a>
+                <div class="search-form">
+                    <form autocomplete="off" role="search" method="get" class="searchform" action="#">
+                        <input type="text" value="" name="s" id="s" placeholder="Search HealtySutra.com">
+                    </form>
+                </div>
+            </div>
+            <!-- End Search -->
 
-        <!-- Collect the nav links, forms, and other content for toggling -->
-        <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+            <!-- Start Navigation List -->
             <ul class="nav navbar-nav navbar-right">
                 <li>
-                    <a class="page-scroll" href="<c:url value="/welcome" />">Home</a>
+                    <a class="active" href="<c:url value="/welcome" />">Home</a>
+                    <ul class="dropdown">
+                        <li><a class="active" href="<c:url value="/about" />">about</a>
+                        </li>
+                    </ul>
                 </li>
                 <li>
-                    <a class="page-scroll" href="<c:url value="/about" />">About</a>
+                    <a href="<c:url value="/about" />">About</a>
                 </li>
                 <li>
-                    <a class="page-scroll" href="javascript:formSubmit()"> Logout</a>
+                    <a href="javascript:formSubmit()"> Logout</a>
                 </li>
-                <%--
-                                <li>
-                                    <a class="page-scroll" href="#portfolio">Portfolio</a>
-                                </li>
-                                <li>
-                                    <a class="page-scroll" href="#contact">Contact</a>
-                                </li>
-                --%>
             </ul>
+            <!-- End Navigation List -->
         </div>
-        <!-- /.navbar-collapse -->
     </div>
-    <!-- /.container-fluid -->
-
-</nav>
+</div>
+<!-- End Header Logo & Naviagtion -->

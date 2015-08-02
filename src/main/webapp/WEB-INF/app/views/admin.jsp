@@ -5,7 +5,7 @@
 <tiles:insertDefinition name="defaultTemplate">
     <tiles:putAttribute name="body">
 
-        <section id="admin" class="bg-main">
+        <div class="section service">
             <div class="container">
                 <div class="row">
                     <h1>${title}</h1>
@@ -19,6 +19,6 @@
                     </c:if>
                 </div>
             </div>
-        </section>
+        </div>
     </tiles:putAttribute>
 </tiles:insertDefinition>
