@@ -70,3 +70,30 @@ sudo chown -R _mysql /usr/local/var/mysql
 RVM:
 
 curl -L https://get.rvm.io | bash -s stable
+
+---------------------------
+If MySQl doesn't start:
+
+try to find your log file with suffix ".err", there should be more info. It might be in:
+
+/usr/local/var/mysql/your_computer_name.local.err
+It's probably problem with permissions
+
+check if any mysql instance is running
+
+        ps -ef | grep mysql
+
+if yes, you should stop it, or kill the process
+
+        kill -9 PID
+where PID is the number displayed next to username on output of previous command
+
+check ownership of /usr/local/var/mysql/
+
+        ls -laF /usr/local/var/mysql/
+
+if it is owner by root you should change it mysql or your_user
+
+        sudo chown -R mysql /usr/local/var/mysql/
+
+---
