@@ -29,6 +29,7 @@
         <url-pattern>/</url-pattern>
     </servlet-mapping>
 
+    <!-- Creates the Spring Container shared by all Servlets and Filters -->
     <listener>
         <listener-class>org.springframework.web.context.ContextLoaderListener</listener-class>
     </listener>
@@ -74,10 +75,43 @@
             <param-value>true</param-value>
         </init-param>
     </filter>
+<!--
+    <filter>
+        <filter-name>loggingFilter</filter-name>
+        <filter-class>au.com.optus.portal.sdk.web.LoggingFilter</filter-class>
+    </filter>
 
+    <filter-mapping>
+        <filter-name>loggingFilter</filter-name>
+        <url-pattern>/*</url-pattern>
+    </filter-mapping>
+    -->
     <filter-mapping>
         <filter-name>CharacterEncodingFilter</filter-name>
         <url-pattern>/*</url-pattern>
     </filter-mapping>
+
+<!--
+    <error-page>
+        <error-code>401</error-code>
+        <location>/error/general-error.html</location>
+    </error-page>
+    <error-page>
+        <error-code>404</error-code>
+        <location>/error/general-error.html</location>
+    </error-page>
+    <error-page>
+        <error-code>403</error-code>
+        <location>/error/access-denied.html</location>
+    </error-page>
+    <error-page>
+        <error-code>500</error-code>
+        <location>/error/general-error.html</location>
+    </error-page>
+    <error-page>
+        <error-code>503</error-code>
+        <location>/error/general-error.html</location>
+    </error-page>
+-->
 
 </web-app>

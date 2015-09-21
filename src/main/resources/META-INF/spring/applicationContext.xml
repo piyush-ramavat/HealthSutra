@@ -16,9 +16,11 @@
     <!-- Scan  persistenceUnits -->
     <context:spring-configured/>
 
+    <context:annotation-config/>
+
     <!-- JDBC Data Source. It is assumed you have MySQL running on localhost port 3306 with
        username root and blank password. Change below if it's not the case -->
-    <bean id="dataSource" class="org.apache.commons.dbcp.BasicDataSource" destroy-method="close">
+    <bean id="hsDataSource" class="org.apache.commons.dbcp.BasicDataSource" destroy-method="close">
         <property name="driverClassName" value="${jdbc.driverClassName}"/>
         <property name="url" value="${jdbc.url}"/>
         <property name="username" value="${jdbc.user}"/>
@@ -28,7 +30,7 @@
 
     <bean class="org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean" id="entityManagerFactory">
         <property name="persistenceUnitName" value="persistenceUnit"/>
-        <property name="dataSource" ref="dataSource"/>
+        <property name="dataSource" ref="hsDataSource"/>
     </bean>
 
     <bean class="org.springframework.orm.jpa.JpaTransactionManager" id="transactionManager">

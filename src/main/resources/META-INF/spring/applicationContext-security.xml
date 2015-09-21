@@ -1,20 +1,34 @@
-<beans:beans xmlns:beans="http://www.springframework.org/schema/beans"
-             xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-             xmlns="http://www.springframework.org/schema/security"
-             xsi:schemaLocation="http://www.springframework.org/schema/beans
-	http://www.springframework.org/schema/beans/spring-beans-4.0.xsd
-	http://www.springframework.org/schema/security
-	http://www.springframework.org/schema/security/spring-security-4.0.xsd">
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:oauth="http://www.springframework.org/schema/security/oauth2"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
+                               http://www.springframework.org/schema/security http://www.springframework.org/schema/security/spring-security.xsd
+
+                               http://www.springframework.org/schema/security/oauth2 http://www.springframework.org/schema/security/spring-security-oauth2.xsd">
+
 
     <!--<http pattern="/login" security="none"/>-->
+    <!-- TODO: Piyush: Change the pattern Value -->
+    <http pattern="/oauth/token" use-expressions="true" auto-config="false" create-session="ifRequired" authentication-manager-ref="hsClientAuthenticationManager"
+          xmlns="http://www.springframework.org/schema/security">
+        <intercept-url pattern="/oauth/token" access="IS_AUTHENTICATED_FULLY"/>
+        <anonymous enabled="false"/>
+        <http-basic entry-point-ref="hsClientAuthenticationEntryPoint"/>
+        <!-- include this only if you need to authenticate clients via request parameters -->
+        <!-- <custom-filter ref="hsClientCredentialsTokenEndpointFilter" before="BASIC_AUTH_FILTER"/> -->
+        <access-denied-handler ref="oauthAccessDeniedHandler"/>
+    </http>
 
     <!-- TODO: Piyush check whether following are required : session-fixation-protection="newSession" auto-config="true"-->
-    <http use-expressions="true">
+    <http pattern="/**" use-expressions="true" auto-config="false" authentication-manager-ref="dbAuthenticationManager"
+          access-decision-manager-ref="accessDecisionManager"
+          xmlns="http://www.springframework.org/schema/security">
         <intercept-url pattern="/login**" access="permitAll"/>
         <!--<intercept-url pattern="/**" access="permitAll"/>-->
         <intercept-url pattern="/app/**" access="hasRole('ROLE_USER')"/>
         <intercept-url pattern="/trainer*" access="hasRole('ROLE_TRAINER')"/>
         <intercept-url pattern="/admin**" access="hasRole('ROLE_SUPER_ADMIN')"/>
+        <!--<intercept-url pattern="/app/**" access="IS_AUTHENTICATED_FULLY"/>-->
         <form-login
                 login-page="/login"
                 default-target-url="/welcome"
@@ -25,31 +39,101 @@
         <logout invalidate-session="true" logout-url="/j_spring_security_logout" logout-success-url="/login?logout"/>
         <!--
         <session-management invalid-session-url="/login?message=Session%20timed%20out!!!" />
+
+        <custom-filter ref="resourceServerFilter" before="PRE_AUTH_FILTER" />
         -->
         <!-- enable csrf protection -->
         <csrf/>
     </http>
-<!--
-    <authentication-manager>
-        <authentication-provider>
-            <user-service>
-                <user name="piyush.ramavat" password="Welcome@1"
-                      authorities="ROLE_SUPER_ADMIN, ROLE_TRAINER, ROLE_USER"/>
-                <user name="chintan.gatecha" password="Welcome@1"
-                      authorities="ROLE_SUPER_ADMIN, ROLE_TRAINER, ROLE_USER"/>
-                <user name="sample.trainer" password="Welcome@1" authorities="ROLE_TRAINER, ROLE_USER"/>
-                <user name="sample.patron" password="Welcome@1" authorities="ROLE_USER"/>
-            </user-service>
-        </authentication-provider>
-    </authentication-manager>
--->
-    <authentication-manager>
-        <authentication-provider user-service-ref='myUserDetailsService'/>
+
+    <!--
+        <authentication-manager>
+            <authentication-provider>
+                <user-service>
+                    <user name="piyush.ramavat" password="Welcome@1"
+                          authorities="ROLE_SUPER_ADMIN, ROLE_TRAINER, ROLE_USER"/>
+                    <user name="chintan.gatecha" password="Welcome@1"
+                          authorities="ROLE_SUPER_ADMIN, ROLE_TRAINER, ROLE_USER"/>
+                    <user name="sample.trainer" password="Welcome@1" authorities="ROLE_TRAINER, ROLE_USER"/>
+                    <user name="sample.patron" password="Welcome@1" authorities="ROLE_USER"/>
+                </user-service>
+            </authentication-provider>
+        </authentication-manager>
+    -->
+
+    <authentication-manager id="dbAuthenticationManager" xmlns="http://www.springframework.org/schema/security">
+        <authentication-provider user-service-ref="hsDbUserDetailsService"/>
     </authentication-manager>
 
-    <beans:bean id="myUserDetailsService"
-                class="org.springframework.security.core.userdetails.jdbc.JdbcDaoImpl">
-        <beans:property name="dataSource" ref="dataSource"/>
-    </beans:bean>
+    <bean id="hsDbUserDetailsService" class="org.springframework.security.core.userdetails.jdbc.JdbcDaoImpl">
+        <property name="dataSource" ref="hsDataSource"/>
+    </bean>
 
-</beans:beans>
+    <!-- Token Management -->
+    <bean id="hsClientAuthenticationEntryPoint" class="org.springframework.security.oauth2.provider.error.OAuth2AuthenticationEntryPoint">
+        <!-- TODO: Piyush: Change the realm Value -->
+        <property name="realmName" value="auth-server/client"/>
+        <property name="typeName" value="Basic"/>
+    </bean>
+
+    <!--
+    <bean id="hsClientCredentialsTokenEndpointFilter" class="org.springframework.security.oauth2.provider.client.ClientCredentialsTokenEndpointFilter">
+         <property name="authenticationManager" ref="hsClientAuthenticationManager"/>
+    </bean>
+    -->
+
+    <bean id="oauthAccessDeniedHandler" class="org.springframework.security.oauth2.provider.error.OAuth2AccessDeniedHandler"/>
+
+    <authentication-manager id="hsClientAuthenticationManager" xmlns="http://www.springframework.org/schema/security">
+        <authentication-provider user-service-ref="hsClientDetailsUserService"/>
+    </authentication-manager>
+
+    <bean id="hsClientDetailsUserService" class="org.springframework.security.oauth2.provider.client.ClientDetailsUserDetailsService">
+        <constructor-arg ref="hsClientDetails"/>
+    </bean>
+
+    <!-- for Token mgmt stored in DB-->
+    <bean id="hsClientDetails" class="org.springframework.security.oauth2.provider.JdbcClientDetailsService">
+        <constructor-arg ref="hsDataSource"/>
+    </bean>
+
+    <bean id="tokenServices" class="au.com.healthsutra.service.HSTokenServices">
+        <property name="tokenStore" ref="tokenStore"/>
+        <property name="supportRefreshToken" value="true"/>
+        <property name="clientDetailsService" ref="hsClientDetails"/>
+        <!--Zero or negative for non-expiring tokens-->
+        <property name="accessTokenValiditySeconds" value="0"/>
+    </bean>
+
+    <bean id="tokenStore" class="org.springframework.security.oauth2.provider.token.JdbcTokenStore">
+        <constructor-arg ref="hsDataSource"/>
+    </bean>
+
+    <!-- Uncomment this if property files is needed auth-server.properties Also uncomment <custom-filter> in <http>
+    <oauth:resource-server id="resourceServerFilter" resource-id="auth-server" token-services-ref="tokenServices"/>
+    -->
+    <bean id="accessDecisionManager" class="org.springframework.security.access.vote.UnanimousBased" xmlns="http://www.springframework.org/schema/beans">
+        <constructor-arg>
+            <list>
+                <bean class="org.springframework.security.oauth2.provider.vote.ScopeVoter"/>
+                <bean class="org.springframework.security.access.vote.RoleVoter"/>
+                <bean class="org.springframework.security.access.vote.AuthenticatedVoter"/>
+            </list>
+        </constructor-arg>
+    </bean>
+
+    <bean id="userApprovalHandler"
+          class="org.springframework.security.oauth2.provider.approval.TokenServicesUserApprovalHandler">
+        <property name="tokenServices" ref="tokenServices"/>
+    </bean>
+
+    <oauth:authorization-server client-details-service-ref="hsClientDetails" token-services-ref="tokenServices" user-approval-handler-ref="userApprovalHandler">
+        <!-- TODO: Piyush Find out what following does
+        <oauth:authorization-code />
+        <oauth:implicit />
+        <oauth:refresh-token />
+        -->
+        <oauth:client-credentials/>
+        <oauth:password/>
+    </oauth:authorization-server>
+</beans>
