@@ -61,13 +61,14 @@
     <script type="text/javascript" src="${pageContext.request.contextPath}/resources/js/jquery.parallax.js"></script>
     <script type="text/javascript" src="${pageContext.request.contextPath}/resources/js/mediaelement-and-player.js"></script>
     <script type="text/javascript" src="${pageContext.request.contextPath}/resources/js/script.js"></script>
+    <script type="text/javascript" src="${pageContext.request.contextPath}/resources/asset/js/angular.js"></script>
 
     <!--[if IE 8]>
     <script src="http://html5shiv.googlecode.com/svn/trunk/html5.js"></script><![endif]-->
     <!--[if lt IE 9]>
     <script src="http://html5shiv.googlecode.com/svn/trunk/html5.js"></script><![endif]-->
 </head>
-<body>
+<body ng-app="healthSutra">
 <!-- Full Body Container -->
 <div id="container">
     <!-- Start Header Section -->
@@ -92,7 +93,7 @@
 
 
 <!-- Style Switcher -->
-<div class="switcher-box">
+<div class="switcher-box" ng-show="{{false}}">
     <a href="#" class="open-switcher show-switcher"><i class="fa fa-cog fa-2x"></i></a>
     <h4>Style Switcher</h4>
     <span>12 Predefined Color Skins</span>
@@ -193,4 +194,7 @@
 </div>
 
 </body>
+
+<script type="text/javascript" src="${pageContext.request.contextPath}/resources/asset/js/appMain.js"></script>
+<script type="text/javascript" src="${pageContext.request.contextPath}/resources/asset/js/menu.js"></script>
 </html>
